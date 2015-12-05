@@ -8,18 +8,19 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController
+{
 
-    override func viewDidLoad() {
+    let mercurialPaint = MercurialPaint(frame: CGRect(x: 0, y: 0, width: 1024, height: 1024), device: MTLCreateSystemDefaultDevice())
+    
+    override func viewDidLoad()
+    {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        view.backgroundColor = UIColor.blackColor()
+       
+        view.addSubview(mercurialPaint)
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
 
 }
 
