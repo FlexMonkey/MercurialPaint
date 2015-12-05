@@ -22,6 +22,7 @@ class MercurialPaint: UIView
     let ciContext = CIContext(EAGLContext: EAGLContext(API: EAGLRenderingAPI.OpenGLES2), options: [kCIContextWorkingColorSpace: NSNull()])
     let heightMapFilter = CIFilter(name: "CIHeightFieldFromMask")!
     let shadedMaterialFilter = CIFilter(name: "CIShadedMaterial")!
+    let maskToAlpha = CIFilter(name: "CIMaskToAlpha")!
     
     // MARK: Priavte variables
     
@@ -49,8 +50,8 @@ class MercurialPaint: UIView
     // MARK: Lazy variables
     
     let textureDescriptor = MTLTextureDescriptor.texture2DDescriptorWithPixelFormat(MTLPixelFormat.RGBA8Unorm,
-        width: 1024,
-        height: 1024,
+        width: 2048,
+        height: 2048,
         mipmapped: false)
     
     lazy var paintingTexture: MTLTexture =
@@ -97,7 +98,7 @@ class MercurialPaint: UIView
     {
         [unowned self] in
         
-        return MPSImageGaussianBlur(device: self.device, sigma: 6)
+        return MPSImageGaussianBlur(device: self.device, sigma: 3)
         }()
     
     lazy var threshold: MPSImageThresholdBinary =
@@ -125,7 +126,7 @@ class MercurialPaint: UIView
         layer.borderColor = UIColor.whiteColor().CGColor
         layer.borderWidth = 1
    
-        metalView.drawableSize = CGSize(width: 1024, height: 1024)
+        metalView.drawableSize = CGSize(width: 2048, height: 2048)
         
         imageView.hidden = true
         
@@ -224,8 +225,12 @@ class MercurialPaint: UIView
         {
             let heightMapFilter = self.heightMapFilter.copy()
             let shadedMaterialFilter = self.shadedMaterialFilter.copy()
+            let maskToAlpha = self.maskToAlpha.copy()
             
-            heightMapFilter.setValue(mercurialImage,
+            maskToAlpha.setValue(mercurialImage,
+                forKey: kCIInputImageKey)
+            
+            heightMapFilter.setValue(maskToAlpha.valueForKey(kCIOutputImageKey),
                 forKey: kCIInputImageKey)
             
             shadedMaterialFilter.setValue(heightMapFilter.valueForKey(kCIOutputImageKey),
@@ -242,7 +247,7 @@ class MercurialPaint: UIView
             
             dispatch_async(dispatch_get_main_queue())
             {
-                self.imageView.image = finalImage; print(finalImage.debugDescription)
+                self.imageView.image = finalImage
             }
         }
     }
@@ -264,10 +269,10 @@ extension MercurialPaint: MTKViewDelegate
         
         commandEncoder.setBuffer(particlesBufferNoCopy, offset: 0, atIndex: 0)
         
-        var xLocation = Int(touchLocation.x)
+        var xLocation = Int(touchLocation.x * 2)
         let xLocationBuffer = device.newBufferWithBytes(&xLocation, length: sizeof(Int), options: MTLResourceOptions.CPUCacheModeDefaultCache)
         
-        var yLocation = Int(touchLocation.y)
+        var yLocation = Int(touchLocation.y * 2)
         let yLocationBuffer = device.newBufferWithBytes(&yLocation, length: sizeof(Int), options: MTLResourceOptions.CPUCacheModeDefaultCache)
         
         commandEncoder.setBuffer(xLocationBuffer, offset: 0, atIndex: 1)

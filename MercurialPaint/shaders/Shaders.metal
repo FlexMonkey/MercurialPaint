@@ -38,7 +38,7 @@ kernel void mercurialPaintShader(texture2d<float, access::write> outTexture [[te
     
     const float randomAngle = rand(randomSeed, xPosition, yPosition) * 6.283185;
     
-    const float randomRadius = rand(randomSeed, yPosition, xPosition) * 25;
+    const float randomRadius = rand(randomSeed, yPosition, xPosition) * 40;
     
     const int writeAtX = xPosition + int(sin(randomAngle) * randomRadius);
     const int writeAtY = yPosition + int(cos(randomAngle) * randomRadius);
