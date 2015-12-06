@@ -36,7 +36,7 @@ class MercurialPaint: UIView
     
     private var particlesBufferNoCopy: MTLBuffer!
     
-    private var touchLocation = CGPoint(x: -1, y: -1)
+    private var touchLocations = [CGPoint]()
     
     // MARK: Public
     
@@ -177,17 +177,17 @@ class MercurialPaint: UIView
         imageView.hidden = true
         metalView.hidden = false
         
-        touchLocation = touch.locationInView(self)
+        touchLocations = [touch.locationInView(self)]
     }
     
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?)
     {
-        guard let touch = touches.first else
+        guard let touch = touches.first, coalescedTouches =  event?.coalescedTouchesForTouch(touch) else
         {
             return
         }
-  
-        touchLocation = touch.locationInView(self)
+        
+        touchLocations = coalescedTouches.map{ return $0.locationInView(self) }
     }
     
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?)
@@ -195,8 +195,7 @@ class MercurialPaint: UIView
         imageView.hidden = false
         metalView.hidden = true
         
-        touchLocation.x = -1
-        touchLocation.y = -1
+        touchLocations = [CGPoint](count: 4, repeatedValue: CGPoint(x: -1, y: 01))
         
         applyCoreImageFilter()
     }
@@ -205,8 +204,6 @@ class MercurialPaint: UIView
     
     func applyCoreImageFilter()
     {
-        print("core image!!!")
-        
         guard let drawable = metalView.currentDrawable else
         {
             print("currentDrawable returned nil")
@@ -251,6 +248,30 @@ class MercurialPaint: UIView
             }
         }
     }
+    
+    func touchLocationsToVector(xy: XY) -> vector_int4
+    {
+        func getValue(point: CGPoint, xy: XY) -> Int32
+        {
+            switch xy
+            {
+            case .X:
+                return Int32(point.x * 2)
+            case .Y:
+                return Int32(point.y * 2)
+            }
+        }
+        
+        let a = touchLocations.count > 0 ? getValue(touchLocations[0], xy: xy) : -1
+        let b = touchLocations.count > 1 ? getValue(touchLocations[1], xy: xy) : -1
+        let c = touchLocations.count > 2 ? getValue(touchLocations[2], xy: xy) : -1
+        let d = touchLocations.count > 3 ? getValue(touchLocations[3], xy: xy) : -1
+        
+        let returnValue = vector_int4(a, b, c, d)
+        
+        return returnValue
+    }
+
 }
 
 extension MercurialPaint: MTKViewDelegate
@@ -268,12 +289,12 @@ extension MercurialPaint: MTKViewDelegate
         commandEncoder.setComputePipelineState(paintingShaderPipelineState)
         
         commandEncoder.setBuffer(particlesBufferNoCopy, offset: 0, atIndex: 0)
+    
+        var xLocation = touchLocationsToVector(.X)
+        let xLocationBuffer = device.newBufferWithBytes(&xLocation, length: sizeof(vector_int4), options: MTLResourceOptions.CPUCacheModeDefaultCache)
         
-        var xLocation = Int(touchLocation.x * 2)
-        let xLocationBuffer = device.newBufferWithBytes(&xLocation, length: sizeof(Int), options: MTLResourceOptions.CPUCacheModeDefaultCache)
-        
-        var yLocation = Int(touchLocation.y * 2)
-        let yLocationBuffer = device.newBufferWithBytes(&yLocation, length: sizeof(Int), options: MTLResourceOptions.CPUCacheModeDefaultCache)
+        var yLocation = touchLocationsToVector(.Y)
+        let yLocationBuffer = device.newBufferWithBytes(&yLocation, length: sizeof(vector_int4), options: MTLResourceOptions.CPUCacheModeDefaultCache)
         
         commandEncoder.setBuffer(xLocationBuffer, offset: 0, atIndex: 1)
         commandEncoder.setBuffer(yLocationBuffer, offset: 0, atIndex: 2)
@@ -310,5 +331,8 @@ extension MercurialPaint: MTKViewDelegate
     }
 }
 
-
+enum XY
+{
+    case X, Y
+}
 

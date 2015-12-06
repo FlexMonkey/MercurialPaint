@@ -24,24 +24,27 @@ float rand(int x, int y, int z)
 kernel void mercurialPaintShader(texture2d<float, access::write> outTexture [[texture(0)]],
                                  const device int *inParticles [[ buffer(0) ]],
                                  
-                                 constant int &xPosition [[ buffer(1) ]],
-                                 constant int &yPosition [[ buffer(2) ]],
+                                 constant int4 &xPosition [[ buffer(1) ]],
+                                 constant int4 &yPosition [[ buffer(2) ]],
                                  
                                  uint id [[thread_position_in_grid]])
 {
-    if (xPosition < 0 || yPosition < 0)
+    for (int i = 0; i < 4; i++)
     {
-        return;
+        if (xPosition[i] < 0 || yPosition[i] < 0)
+        {
+            return;
+        }
+        
+        const int randomSeed = inParticles[id];
+        
+        const float randomAngle = rand(randomSeed, xPosition[i], yPosition[i]) * 6.283185;
+        
+        const float randomRadius = rand(randomSeed, yPosition[i], xPosition[i]) * 40;
+        
+        const int writeAtX = xPosition[i] + int(sin(randomAngle) * randomRadius);
+        const int writeAtY = yPosition[i] + int(cos(randomAngle) * randomRadius);
+        
+        outTexture.write(float4(1, 1, 1, 1), uint2(writeAtX, writeAtY));
     }
-    
-    const int randomSeed = inParticles[id];
-    
-    const float randomAngle = rand(randomSeed, xPosition, yPosition) * 6.283185;
-    
-    const float randomRadius = rand(randomSeed, yPosition, xPosition) * 40;
-    
-    const int writeAtX = xPosition + int(sin(randomAngle) * randomRadius);
-    const int writeAtY = yPosition + int(cos(randomAngle) * randomRadius);
-    
-    outTexture.write(float4(1, 1, 1, 1), uint2(writeAtX, writeAtY));
 }
