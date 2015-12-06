@@ -43,6 +43,15 @@ class MercurialPaint: UIView
     private var pendingUpdate = false
     private var isBusy = false
     
+    private var isDrawing = false
+    {
+        didSet
+        {
+            imageView.hidden = isDrawing
+            metalView.hidden = !isDrawing
+        }
+    }
+    
     // MARK: Public
     
     var shadingImage: UIImage?
@@ -189,8 +198,7 @@ class MercurialPaint: UIView
             ? Float(touch.force / touch.maximumPossibleForce)
             : 0.5
         
-        imageView.hidden = true
-        metalView.hidden = false
+        isDrawing = true
         
         touchLocations = [touch.locationInView(self)]
     }
@@ -211,8 +219,7 @@ class MercurialPaint: UIView
     
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?)
     {
-        imageView.hidden = false
-        metalView.hidden = true
+        isDrawing = false
         
         touchLocations = [CGPoint](count: 4, repeatedValue: CGPoint(x: -1, y: 01))
         

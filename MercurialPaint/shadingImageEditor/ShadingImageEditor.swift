@@ -25,7 +25,7 @@ class ShadingImageEditor: UIControl
             ]),
         
         ParameterGroup(name: "Light 1", parameters: [
-            Parameter(name: "Hue", parameterFunction: .AdjustLightHue(index: 0), value: 0, minMax: MinMaxNorm),
+            Parameter(name: "Hue", parameterFunction: .AdjustLightHue(index: 0), value: 0.1, minMax: MinMaxNorm),
             Parameter(name: "Brightness", parameterFunction: .AdjustLightBrightness(index: 0), value: 1, minMax: MinMaxNorm),
             Parameter(name: "x Position", parameterFunction: .AdjustLightPosition(index: 0, axis: .X), value: 0, minMax: MinMaxXY),
             Parameter(name: "y Position", parameterFunction: .AdjustLightPosition(index: 0, axis: .Y), value: 25, minMax: MinMaxXY),
@@ -33,7 +33,7 @@ class ShadingImageEditor: UIControl
             ]),
         
         ParameterGroup(name: "Light 2", parameters: [
-            Parameter(name: "Hue", parameterFunction: .AdjustLightHue(index: 1), value: 0.333, minMax: MinMaxNorm),
+            Parameter(name: "Hue", parameterFunction: .AdjustLightHue(index: 1), value: 0.48, minMax: MinMaxNorm),
             Parameter(name: "Brightness", parameterFunction: .AdjustLightBrightness(index: 1), value: 1, minMax: MinMaxNorm),
             Parameter(name: "x Position", parameterFunction: .AdjustLightPosition(index: 1, axis: .X), value: 25, minMax: MinMaxXY),
             Parameter(name: "y Position", parameterFunction: .AdjustLightPosition(index: 1, axis: .Y), value: -35, minMax: MinMaxXY),
@@ -49,7 +49,7 @@ class ShadingImageEditor: UIControl
             ]),
         
         ParameterGroup(name: "Light 4", parameters: [
-            Parameter(name: "Hue", parameterFunction: .AdjustLightHue(index: 3), value: 0.25, minMax: MinMaxNorm),
+            Parameter(name: "Hue", parameterFunction: .AdjustLightHue(index: 3), value: 0.18, minMax: MinMaxNorm),
             Parameter(name: "Brightness", parameterFunction: .AdjustLightBrightness(index: 3), value: 1, minMax: MinMaxNorm),
             Parameter(name: "x Position", parameterFunction: .AdjustLightPosition(index: 3, axis: .X), value: -35, minMax: MinMaxXY),
             Parameter(name: "y Position", parameterFunction: .AdjustLightPosition(index: 3, axis: .Y), value: 10, minMax: MinMaxXY),
@@ -67,8 +67,8 @@ class ShadingImageEditor: UIControl
     var sceneChanged = false
     
     var image: UIImage?
-        {
-            return sceneKitView.snapshot()
+    {
+        return sceneKitView.snapshot()
     }
     
     override init(frame: CGRect)
