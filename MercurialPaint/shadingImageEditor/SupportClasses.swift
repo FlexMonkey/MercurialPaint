@@ -8,14 +8,28 @@
 
 import SceneKit
 
-struct ParameterGroup
+class ParameterGroup
 {
+    init(name: String, parameters: [Parameter])
+    {
+        self.name = name
+        self.parameters = parameters
+    }
+    
     let name: String
     let parameters: [Parameter]
 }
 
-struct Parameter
+class Parameter
 {
+    init(name: String, parameterFunction: ParameterFunction, value: CGFloat, minMax: MinMax)
+    {
+        self.name = name
+        self.parameterFunction = parameterFunction
+        self.value = value
+        self.minMax = minMax
+    }
+    
     let name: String
     let parameterFunction: ParameterFunction
     var value: CGFloat

@@ -59,7 +59,7 @@ class LabelledSlider: UIControl
     let slider = UISlider()
     
     override var enabled: Bool
-        {
+    {
         didSet
         {
             userInteractionEnabled = enabled
@@ -71,7 +71,7 @@ class LabelledSlider: UIControl
     }
     
     var parameter: Parameter?
-        {
+    {
         didSet
         {
             guard let parameter = parameter else
@@ -87,7 +87,7 @@ class LabelledSlider: UIControl
             
             valueLabel.text = String(format: "%.2f", parameter.value)
             
-            slider.value = Float(parameter.value)
+            slider.value = Float(parameter.value); print(parameter.name, parameter.value)
         }
     }
     

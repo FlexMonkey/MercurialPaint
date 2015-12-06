@@ -264,8 +264,8 @@ extension ShadingImageEditor: SCNSceneRendererDelegate
         sceneChanged = false
         
         dispatch_async(dispatch_get_main_queue())
-            {
-                self.sendActionsForControlEvents(UIControlEvents.ValueChanged)
+        {
+            self.sendActionsForControlEvents(UIControlEvents.ValueChanged)
         }
     }
 }
