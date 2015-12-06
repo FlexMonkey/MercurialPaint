@@ -10,21 +10,23 @@ import UIKit
 import MetalKit
 import MetalPerformanceShaders
 
+let particleCount: Int = 2048
+
 class MercurialPaint: UIView
 {
     // MARK: Constants
     
     let device = MTLCreateSystemDefaultDevice()!
-    let particleCount: Int = 1024
     let alignment:Int = 0x4000
-    let particlesMemoryByteSize:Int = 1024 * sizeof(Int)
+    let particlesMemoryByteSize:Int = particleCount * sizeof(Int)
+    let halfPi = CGFloat(M_PI_2)
     
     let ciContext = CIContext(EAGLContext: EAGLContext(API: EAGLRenderingAPI.OpenGLES2), options: [kCIContextWorkingColorSpace: NSNull()])
     let heightMapFilter = CIFilter(name: "CIHeightFieldFromMask")!
     let shadedMaterialFilter = CIFilter(name: "CIShadedMaterial")!
     let maskToAlpha = CIFilter(name: "CIMaskToAlpha")!
     
-    // MARK: Priavte variables
+    // MARK: Private variables
     
     private var threadsPerThreadgroup:MTLSize!
     private var threadgroupsPerGrid:MTLSize!
@@ -36,9 +38,10 @@ class MercurialPaint: UIView
     
     private var particlesBufferNoCopy: MTLBuffer!
     private var touchLocations = [CGPoint]()
+    private var touchForce:Float = 0
     
-    var pendingUpdate = false
-    var isBusy = false
+    private var pendingUpdate = false
+    private var isBusy = false
     
     // MARK: Public
     
@@ -159,7 +162,7 @@ class MercurialPaint: UIView
         
         for index in particlesParticleBufferPtr.startIndex ..< particlesParticleBufferPtr.endIndex
         {
-            particlesParticleBufferPtr[index] = Int(arc4random_uniform(1024))
+            particlesParticleBufferPtr[index] = Int(arc4random_uniform(9999))
         }
         
         let threadExecutionWidth = paintingShaderPipelineState.threadExecutionWidth
@@ -182,6 +185,10 @@ class MercurialPaint: UIView
             return
         }
         
+        touchForce = touch.type == .Stylus
+            ? Float(touch.force / touch.maximumPossibleForce)
+            : 0.5
+        
         imageView.hidden = true
         metalView.hidden = false
         
@@ -194,6 +201,10 @@ class MercurialPaint: UIView
         {
             return
         }
+
+        touchForce = touch.type == .Stylus
+            ? Float(touch.force / touch.maximumPossibleForce)
+            : 0.5
         
         touchLocations = coalescedTouches.map{ return $0.locationInView(self) }
     }
@@ -315,13 +326,22 @@ extension MercurialPaint: MTKViewDelegate
         commandEncoder.setBuffer(particlesBufferNoCopy, offset: 0, atIndex: 0)
     
         var xLocation = touchLocationsToVector(.X)
-        let xLocationBuffer = device.newBufferWithBytes(&xLocation, length: sizeof(vector_int4), options: MTLResourceOptions.CPUCacheModeDefaultCache)
+        let xLocationBuffer = device.newBufferWithBytes(&xLocation,
+            length: sizeof(vector_int4),
+            options: MTLResourceOptions.CPUCacheModeDefaultCache)
         
         var yLocation = touchLocationsToVector(.Y)
-        let yLocationBuffer = device.newBufferWithBytes(&yLocation, length: sizeof(vector_int4), options: MTLResourceOptions.CPUCacheModeDefaultCache)
+        let yLocationBuffer = device.newBufferWithBytes(&yLocation,
+            length: sizeof(vector_int4),
+            options: MTLResourceOptions.CPUCacheModeDefaultCache)
+        
+        let touchForceBuffer = device.newBufferWithBytes(&touchForce,
+            length: sizeof(Float),
+            options: MTLResourceOptions.CPUCacheModeDefaultCache)
         
         commandEncoder.setBuffer(xLocationBuffer, offset: 0, atIndex: 1)
         commandEncoder.setBuffer(yLocationBuffer, offset: 0, atIndex: 2)
+        commandEncoder.setBuffer(touchForceBuffer, offset: 0, atIndex: 3)
         
         commandEncoder.setTexture(paintingTexture, atIndex: 0)
         

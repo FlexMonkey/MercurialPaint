@@ -26,9 +26,11 @@ kernel void mercurialPaintShader(texture2d<float, access::write> outTexture [[te
                                  
                                  constant int4 &xPosition [[ buffer(1) ]],
                                  constant int4 &yPosition [[ buffer(2) ]],
+                                 constant float &touchForce [[ buffer(3) ]],
                                  
                                  uint id [[thread_position_in_grid]])
 {
+ 
     for (int i = 0; i < 4; i++)
     {
         if (xPosition[i] < 0 || yPosition[i] < 0)
@@ -40,7 +42,7 @@ kernel void mercurialPaintShader(texture2d<float, access::write> outTexture [[te
         
         const float randomAngle = rand(randomSeed, xPosition[i], yPosition[i]) * 6.283185;
         
-        const float randomRadius = rand(randomSeed, yPosition[i], xPosition[i]) * 10; // 10 - 100?
+        const float randomRadius = rand(randomSeed, yPosition[i], xPosition[i]) * (10 + touchForce * 200);
         
         const int writeAtX = xPosition[i] + int(sin(randomAngle) * randomRadius);
         const int writeAtY = yPosition[i] + int(cos(randomAngle) * randomRadius);
