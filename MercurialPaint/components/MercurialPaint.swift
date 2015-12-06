@@ -37,21 +37,22 @@ class MercurialPaint: UIView
     private var particlesParticleBufferPtr: UnsafeMutableBufferPointer<Int>!
     
     private var particlesBufferNoCopy: MTLBuffer!
-    private var touchLocations = [CGPoint]()
+    private var touchLocations = [CGPoint](count: 4, repeatedValue: CGPoint(x: -1, y: -1))
     private var touchForce:Float = 0
     
     private var pendingUpdate = false
     private var isBusy = false
-    
     private var isDrawing = false
     {
         didSet
         {
-            imageView.hidden = isDrawing
-            metalView.hidden = !isDrawing
+            if isDrawing
+            {
+                metalView.paused = false
+            }
         }
     }
-    
+   
     // MARK: Public
     
     var shadingImage: UIImage?
@@ -148,12 +149,12 @@ class MercurialPaint: UIView
    
         metalView.drawableSize = CGSize(width: 2048, height: 2048)
         
-        imageView.hidden = true
-        
         addSubview(metalView)
         addSubview(imageView)
         
         setUpMetal()
+        
+        metalView.paused = true
     }
 
     required init(coder: NSCoder)
@@ -197,10 +198,10 @@ class MercurialPaint: UIView
         touchForce = touch.type == .Stylus
             ? Float(touch.force / touch.maximumPossibleForce)
             : 0.5
-        
-        isDrawing = true
-        
+
         touchLocations = [touch.locationInView(self)]
+    
+        isDrawing = true
     }
     
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?)
@@ -219,11 +220,11 @@ class MercurialPaint: UIView
     
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?)
     {
-        isDrawing = false
-        
-        touchLocations = [CGPoint](count: 4, repeatedValue: CGPoint(x: -1, y: 01))
+        touchLocations = [CGPoint](count: 4, repeatedValue: CGPoint(x: -1, y: -1))
         
         applyCoreImageFilter()
+        
+        isDrawing = false
     }
     
     // MARK: Core Image Stuff
@@ -377,8 +378,10 @@ extension MercurialPaint: MTKViewDelegate
         
         for index in particlesParticleBufferPtr.startIndex ..< particlesParticleBufferPtr.endIndex
         {
-            particlesParticleBufferPtr[index] = Int(arc4random_uniform(1024))
+            particlesParticleBufferPtr[index] = Int(arc4random_uniform(9999))
         }
+        
+        view.paused = !isDrawing
     }
 }
 

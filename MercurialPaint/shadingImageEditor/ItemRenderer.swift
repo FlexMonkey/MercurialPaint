@@ -87,7 +87,7 @@ class LabelledSlider: UIControl
             
             valueLabel.text = String(format: "%.2f", parameter.value)
             
-            slider.value = Float(parameter.value); print(parameter.name, parameter.value)
+            slider.value = Float(parameter.value)
         }
     }
     
