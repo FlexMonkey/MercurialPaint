@@ -35,12 +35,20 @@ class MercurialPaint: UIView
     private var particlesParticleBufferPtr: UnsafeMutableBufferPointer<Int>!
     
     private var particlesBufferNoCopy: MTLBuffer!
-    
     private var touchLocations = [CGPoint]()
+    
+    var pendingUpdate = false
+    var isBusy = false
     
     // MARK: Public
     
     var shadingImage: UIImage?
+    {
+        didSet
+        {
+            applyCoreImageFilter()
+        }
+    }
     
     // MARK: UI components
     
@@ -211,10 +219,18 @@ class MercurialPaint: UIView
             return
         }
         
+        guard !isBusy else
+        {
+            pendingUpdate = true
+            return
+        }
+        
         guard let shadingImage = shadingImage, ciShadingImage = CIImage(image: shadingImage) else
         {
             return
         }
+        
+        isBusy = true
         
         let mercurialImage = CIImage(MTLTexture: drawable.texture, options: nil)
         
@@ -245,6 +261,14 @@ class MercurialPaint: UIView
             dispatch_async(dispatch_get_main_queue())
             {
                 self.imageView.image = finalImage
+                self.isBusy = false
+                
+                if self.pendingUpdate
+                {
+                    self.pendingUpdate = false
+                    
+                    self.applyCoreImageFilter()
+                }
             }
         }
     }

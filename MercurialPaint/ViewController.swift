@@ -35,9 +35,20 @@ class ViewController: UIViewController
     
     override func viewDidLayoutSubviews()
     {
-        mercurialPaint.frame = CGRect(x: 0, y: 0, width: 1024, height: 1024)
+        mercurialPaint.frame = CGRect(x: 0,
+            y: 0,
+            width: 1024,
+            height: 1024)
         
-        shadingImageEditor.frame = CGRect(x: view.frame.width - 300, y: 0, width: 300, height: view.frame.height)
+        shadingImageEditor.frame = CGRect(x: 1026,
+            y: 0,
+            width: view.frame.width - 1026,
+            height: view.frame.height)
+    }
+    
+    override func prefersStatusBarHidden() -> Bool
+    {
+        return true
     }
 }
 

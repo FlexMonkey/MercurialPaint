@@ -113,10 +113,12 @@ class ShadingImageEditor: UIControl
     
     func positionLightWidgets()
     {
+        let width = frame.width
+        
         for (widget, light) in zip(lightPositionWidgets, lights)
         {
-            let lightPosition = CGPoint(x: 300 * CGFloat((light.position.x - MinMaxXY.min) / (MinMaxXY.max - MinMaxXY.min)) - 10,
-                y: 300 - (300 * CGFloat((light.position.y - MinMaxXY.min) / (MinMaxXY.max - MinMaxXY.min))) - 10
+            let lightPosition = CGPoint(x: width * CGFloat((light.position.x - MinMaxXY.min) / (MinMaxXY.max - MinMaxXY.min)) - 10,
+                y: width - (width * CGFloat((light.position.y - MinMaxXY.min) / (MinMaxXY.max - MinMaxXY.min))) - 10
             )
             
             widget.frame = CGRect(origin: lightPosition,
@@ -242,6 +244,8 @@ class ShadingImageEditor: UIControl
             height: frame.height - frame.width)
         
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+        
+        positionLightWidgets()
     }
     
 }
