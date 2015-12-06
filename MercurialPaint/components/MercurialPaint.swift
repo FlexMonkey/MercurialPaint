@@ -305,12 +305,12 @@ class MercurialPaint: UIView
             }
         }
         
-        let a = touchLocations.count > 0 ? getValue(touchLocations[0], xy: xy) : -1
-        let b = touchLocations.count > 1 ? getValue(touchLocations[1], xy: xy) : -1
-        let c = touchLocations.count > 2 ? getValue(touchLocations[2], xy: xy) : -1
-        let d = touchLocations.count > 3 ? getValue(touchLocations[3], xy: xy) : -1
+        let x = touchLocations.count > 0 ? getValue(touchLocations[0], xy: xy) : -1
+        let y = touchLocations.count > 1 ? getValue(touchLocations[1], xy: xy) : -1
+        let z = touchLocations.count > 2 ? getValue(touchLocations[2], xy: xy) : -1
+        let w = touchLocations.count > 3 ? getValue(touchLocations[3], xy: xy) : -1
         
-        let returnValue = vector_int4(a, b, c, d)
+        let returnValue = vector_int4(x, y, z, w)
         
         return returnValue
     }
@@ -375,12 +375,7 @@ extension MercurialPaint: MTKViewDelegate
         commandBuffer.commit()
         
         drawable.present()
-        
-        for index in particlesParticleBufferPtr.startIndex ..< particlesParticleBufferPtr.endIndex
-        {
-            particlesParticleBufferPtr[index] = Int(arc4random_uniform(9999))
-        }
-        
+ 
         view.paused = !isDrawing
     }
 }
