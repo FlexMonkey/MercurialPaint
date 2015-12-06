@@ -14,6 +14,7 @@
 		3E02B18D1C1156AB00258127 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3E02B18B1C1156AB00258127 /* LaunchScreen.storyboard */; };
 		3E02B1961C1156E000258127 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 3E02B1951C1156E000258127 /* Shaders.metal */; };
 		3E02B1991C11576300258127 /* MercurialPaint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E02B1981C11576300258127 /* MercurialPaint.swift */; };
+		3E5747F61C14686D0082ABF4 /* screenshot.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 3E5747F51C14686D0082ABF4 /* screenshot.jpg */; };
 		3EC593C01C12C10A00A23D8A /* ShadingImageEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EC593BF1C12C10A00A23D8A /* ShadingImageEditor.swift */; };
 		3EC593C21C12C12100A23D8A /* ItemRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EC593C11C12C12100A23D8A /* ItemRenderer.swift */; };
 		3EC593C41C12C14500A23D8A /* SupportClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EC593C31C12C14500A23D8A /* SupportClasses.swift */; };
@@ -29,6 +30,7 @@
 		3E02B18E1C1156AB00258127 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3E02B1951C1156E000258127 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = Shaders.metal; path = shaders/Shaders.metal; sourceTree = "<group>"; };
 		3E02B1981C11576300258127 /* MercurialPaint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MercurialPaint.swift; path = components/MercurialPaint.swift; sourceTree = "<group>"; };
+		3E5747F51C14686D0082ABF4 /* screenshot.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = screenshot.jpg; path = MercurialPaint/screenshot.jpg; sourceTree = "<group>"; };
 		3EC593BF1C12C10A00A23D8A /* ShadingImageEditor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ShadingImageEditor.swift; path = shadingImageEditor/ShadingImageEditor.swift; sourceTree = "<group>"; };
 		3EC593C11C12C12100A23D8A /* ItemRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ItemRenderer.swift; path = shadingImageEditor/ItemRenderer.swift; sourceTree = "<group>"; };
 		3EC593C31C12C14500A23D8A /* SupportClasses.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SupportClasses.swift; path = shadingImageEditor/SupportClasses.swift; sourceTree = "<group>"; };
@@ -48,6 +50,7 @@
 		3E02B1761C1156AB00258127 = {
 			isa = PBXGroup;
 			children = (
+				3E5747F51C14686D0082ABF4 /* screenshot.jpg */,
 				3E02B1811C1156AB00258127 /* MercurialPaint */,
 				3E02B1801C1156AB00258127 /* Products */,
 			);
@@ -164,6 +167,7 @@
 				3E02B18D1C1156AB00258127 /* LaunchScreen.storyboard in Resources */,
 				3E02B18A1C1156AB00258127 /* Assets.xcassets in Resources */,
 				3E02B1881C1156AB00258127 /* Main.storyboard in Resources */,
+				3E5747F61C14686D0082ABF4 /* screenshot.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
