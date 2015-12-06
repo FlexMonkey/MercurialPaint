@@ -1,6 +1,8 @@
 # MercurialPaint
 Mercurial Painting using Metal and Core Image
 
+![screenshot](MercurialPaint/screenshot.jpg)
+
 Following on from my recent MercurialText experiment, here's another implementation of `CIHeightFieldFromMask` and `CIShadedMaterial`, MercurialPaint. MercurialPaint is an Apple Pencil driven sketching app that uses Metal and Metal Performance Shaders to create a skeletal or scaffold texture followed by a Core Image step to apply the 3D embossed effect based on an image of a hemisphere created with Scene Kit.
 
 My MercurialText post discusses the Core Image and Scene Kit steps, so this article begins by discussing how I create the scaffold image using Metal.
